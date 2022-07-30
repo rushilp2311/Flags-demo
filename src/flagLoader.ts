@@ -10,10 +10,7 @@ export function setupEventSource(
   onMessageHandler: (e: MessageEvent<any>) => void
 ) {
   try {
-    const projectId = "a1dec559-3221-45e9-9e31-c73a491a9dda";
-    const sse = new EventSource(
-      `http://localhost:4300/sse/subscribeToFlagUpdates?projectId=${projectId}`
-    );
+    const sse = new EventSource(`${import.meta.env.VITE_API_URL}`);
 
     sse.onmessage = onMessageHandler;
 
