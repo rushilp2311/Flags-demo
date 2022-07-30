@@ -22,7 +22,7 @@ import {
   OfficeBuildingIcon,
   SearchIcon,
 } from "@heroicons/react/solid";
-import { getFeatureFlags, sse } from "./flagLoader";
+import { setupEventSource } from "./flagLoader";
 
 const navigation = [
   { name: "Home", href: "#", icon: HomeIcon, current: true },
@@ -102,13 +102,15 @@ export default function App() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [flags, setFlags] = useState<any>({});
 
-  sse.onmessage = (e) => {
+  const onMessageHandler: any = (e: MessageEvent<any>) => {
     const flagMap: any = {};
     JSON.parse(e.data).flags.map((flag: any) => {
       flagMap[flag.flagKey] = flag.state === 0 ? false : true;
     });
     setFlags(flagMap);
   };
+
+  setupEventSource(onMessageHandler);
 
   return (
     <>
@@ -284,7 +286,7 @@ export default function App() {
             {/* Search bar */}
             <div className="flex-1 px-4 flex justify-between sm:px-6 lg:max-w-6xl lg:mx-auto lg:px-8">
               <div className="flex-1 flex">
-                {flags.searchFeatureFlag && (
+                {flags?.searchFeatureFlag && (
                   <form className="w-full flex md:ml-0" action="#" method="GET">
                     <label htmlFor="search-field" className="sr-only">
                       Search
@@ -447,7 +449,7 @@ export default function App() {
             </div>
 
             <div className="mt-8">
-              {flags.overviewFlag && (
+              {flags?.overviewFlag && (
                 <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
                   <h2 className="text-lg leading-6 font-medium text-gray-900">
                     Overview
@@ -496,7 +498,7 @@ export default function App() {
                   </div>
                 </div>
               )}
-              {flags.recentActivityFlag && (
+              {flags?.recentActivityFlag && (
                 <>
                   <h2 className="max-w-6xl mx-auto mt-8 px-4 text-lg leading-6 font-medium text-gray-900 sm:px-6 lg:px-8">
                     Recent activity
