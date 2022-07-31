@@ -112,6 +112,10 @@ export default function App() {
 
   setupEventSource(onMessageHandler);
 
+  useEffect(() => {
+    document.title = "Flags Demo";
+  }, []);
+
   return (
     <>
       <div className="min-h-full">
